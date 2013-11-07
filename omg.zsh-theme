@@ -22,16 +22,16 @@ eval my_orange='$FG[214]'
 
 local user='%n'
 local pwd='%{$fg[yellow]%}%~%{$reset_color%}'
-local rvm=''
+
 # If rvm or rbenv display ruby version
-if [ -e ~/.rvm/bin/rvm-prompt ]; then
-    rvm='RVM%{$reset_color%} %{$fg[red]%}$(~/.rvm/bin/rvm-prompt i v g) %{$reset_color%}'
+local rvm_ruby=''
+if which rvm-prompt &> /dev/null; then
+  rvm_ruby='$(rvm-prompt i v g)%{$reset_color%}'
 else
   if which rbenv &> /dev/null; then
-    rvm='RBENV %{$reset_color%} %{$fg[red]%}$(rbenv version | sed -e "s/ (set.*$//") %{$reset_color%}'
+    rvm_ruby='$(rbenv version | sed -e "s/ (set.*$//")%{$reset_color%}'
   fi
 fi
-
 
 local return_code='%(?..%{$fg[red]%}%? ↵%{$reset_color%})'
 local git_branch='$(git_prompt_status)%{$reset_color%}$(git_prompt_info)%{$reset_color%}'
@@ -51,8 +51,8 @@ ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%} ✭"
 PROMPT="$my_orange$(prompt_delimiter)%{$reset_color%}
 ${pwd}%{$reset_color%}
 $fg[green]$(prompt_char)"
-RPROMPT="${return_code} ${git_branch} ${rvm}"
+RPROMPT="${return_code} ${git_branch} ${rvm_ruby}"
 
 # Protect the innocent! Don't display who did it
 # Uncomment this line if you want full accountability for your actions
-# RPROMPT="${return_code} ${git_branch} ${rvm} ${user}@$(box_name)"
+# RPROMPT="${return_code} ${git_branch} ${rvm_ruby} ${user}@$(box_name)"
